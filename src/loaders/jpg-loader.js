@@ -1,13 +1,21 @@
-const loaderUtils = require('loader-utils')
-const sizeOf = require('image-size')
-const promisify = require('es6-promisify')
-const gm = require('gm')
+import loaderUtils from 'loader-utils'
+import sizeOf from 'image-size'
+import promisify from 'es6-promisify'
+import gm from 'gm'
+import { ExifImage } from 'exif'
 
 const im = gm.subClass({imageMagick: true})
 
 const DEFAULTOPTIONS = {
-  name: '[hash].[ext]'
+  name: '[hash].[ext]',
+  thumbnail: '[hash]_thumbnail.[ext]'
 }
+
+const getThumbnail = (path, size) => new Promise((resolve, reject) => {
+  im(path).resize(size).toBuffer((err, buffer) => {
+    err ?  reject(err) : resolve(buffer)
+  })
+})
 
 const getColor = path => new Promise((resolve, reject) => {
   im(path).setFormat('ppm').resize(1, 1).toBuffer((err, buffer) => {
@@ -18,6 +26,12 @@ const getColor = path => new Promise((resolve, reject) => {
     resolve(color)
   })
 })
+
+const getInfo = async path => {
+  const info = await promisify(ExifImage)(path)
+  return info
+}
+
 const getSize = async path => {
   const size = await promisify(sizeOf)(path)
   return size
@@ -34,6 +48,12 @@ module.exports = function(content) {
 
     const size = await getSize(this.resourcePath)
     const color = await getColor(this.resourcePath)
+    const info = await getInfo(this.resourcePath)
+
+    //
+    const thumbnail = await getThumbnail(this.resourcePath, 120)
+    const filename_thumbnail = loaderUtils.interpolateName(this, options.thumbnail, { content })
+    this.emitFile(filename_thumbnail, thumbnail)
 
     callback(null, [
       'module.exports = {',
@@ -41,7 +61,9 @@ module.exports = function(content) {
       'width:' + size.width + ',',
       'height:' + size.height + ',',
       'color:' + JSON.stringify(color) + ',',
-      'uri:' + '__webpack_public_path__ + ' + JSON.stringify(filename),
+      'uri:' + '__webpack_public_path__ + ' + JSON.stringify(filename) + ',',
+      'thumbnail:' + '__webpack_public_path__ + ' + JSON.stringify(filename_thumbnail) + ',',
+      'info:' + JSON.stringify(info) + ',', 
       '}'
     ].join(''))
 

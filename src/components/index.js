@@ -3,6 +3,8 @@ import images from '../images'
 import scrollbarwidth from './scrollbarwidth'
 import Image from './Image'
 
+console.log(images)
+
 const SIZE = 640
 const MARGIN = 30
 

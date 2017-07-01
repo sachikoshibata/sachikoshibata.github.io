@@ -166,6 +166,7 @@ module.exports = {
         loader: require.resolve('../loaders/jpg-loader'),
         options: {
           name: 'static/media/[name].[hash:8].[ext]',
+          thumbnail: 'static/media/[name].[hash:8].thumbnail.[ext]',
         },
       },
       // Process JS with Babel.

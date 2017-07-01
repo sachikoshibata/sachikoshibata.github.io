@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,17 +76,41 @@ module.exports =
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _loaderUtils = __webpack_require__(6);
+
+var _loaderUtils2 = _interopRequireDefault(_loaderUtils);
+
+var _imageSize = __webpack_require__(5);
+
+var _imageSize2 = _interopRequireDefault(_imageSize);
+
+var _es6Promisify = __webpack_require__(2);
+
+var _es6Promisify2 = _interopRequireDefault(_es6Promisify);
+
+var _gm = __webpack_require__(4);
+
+var _gm2 = _interopRequireDefault(_gm);
+
+var _exif = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-var loaderUtils = __webpack_require__(5);
-var sizeOf = __webpack_require__(4);
-var promisify = __webpack_require__(2);
-var gm = __webpack_require__(3);
-
-var im = gm.subClass({ imageMagick: true });
+var im = _gm2.default.subClass({ imageMagick: true });
 
 var DEFAULTOPTIONS = {
-  name: '[hash].[ext]'
+  name: '[hash].[ext]',
+  thumbnail: '[hash]_thumbnail.[ext]'
+};
+
+var getThumbnail = function getThumbnail(path, size) {
+  return new Promise(function (resolve, reject) {
+    im(path).resize(size).toBuffer(function (err, buffer) {
+      err ? reject(err) : resolve(buffer);
+    });
+  });
 };
 
 var getColor = function getColor(path) {
@@ -98,19 +122,20 @@ var getColor = function getColor(path) {
     });
   });
 };
-var getSize = function () {
+
+var getInfo = function () {
   var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(path) {
-    var size;
+    var info;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return promisify(sizeOf)(path);
+            return (0, _es6Promisify2.default)(_exif.ExifImage)(path);
 
           case 2:
-            size = _context.sent;
-            return _context.abrupt('return', size);
+            info = _context.sent;
+            return _context.abrupt('return', info);
 
           case 4:
           case 'end':
@@ -120,47 +145,86 @@ var getSize = function () {
     }, _callee, undefined);
   }));
 
-  return function getSize(_x) {
+  return function getInfo(_x) {
     return _ref.apply(this, arguments);
+  };
+}();
+
+var getSize = function () {
+  var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(path) {
+    var size;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.next = 2;
+            return (0, _es6Promisify2.default)(_imageSize2.default)(path);
+
+          case 2:
+            size = _context2.sent;
+            return _context2.abrupt('return', size);
+
+          case 4:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, undefined);
+  }));
+
+  return function getSize(_x2) {
+    return _ref2.apply(this, arguments);
   };
 }();
 
 module.exports = function (content) {
   var _this = this;
 
-  _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
-    var callback, options, filename, size, color;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+  _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
+    var callback, options, filename, size, color, info, thumbnail, filename_thumbnail;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             callback = _this.async();
-            options = _extends({}, DEFAULTOPTIONS, loaderUtils.getOptions(_this));
-            filename = loaderUtils.interpolateName(_this, options.name, { content: content });
+            options = _extends({}, DEFAULTOPTIONS, _loaderUtils2.default.getOptions(_this));
+            filename = _loaderUtils2.default.interpolateName(_this, options.name, { content: content });
 
 
             _this.emitFile(filename, content);
 
-            _context2.next = 6;
+            _context3.next = 6;
             return getSize(_this.resourcePath);
 
           case 6:
-            size = _context2.sent;
-            _context2.next = 9;
+            size = _context3.sent;
+            _context3.next = 9;
             return getColor(_this.resourcePath);
 
           case 9:
-            color = _context2.sent;
+            color = _context3.sent;
+            _context3.next = 12;
+            return getInfo(_this.resourcePath);
 
+          case 12:
+            info = _context3.sent;
+            _context3.next = 15;
+            return getThumbnail(_this.resourcePath, 120);
 
-            callback(null, ['module.exports = {', 'bytesTotal:' + content.length + ',', 'width:' + size.width + ',', 'height:' + size.height + ',', 'color:' + JSON.stringify(color) + ',', 'uri:' + '__webpack_public_path__ + ' + JSON.stringify(filename), '}'].join(''));
+          case 15:
+            thumbnail = _context3.sent;
+            filename_thumbnail = _loaderUtils2.default.interpolateName(_this, options.thumbnail, { content: content });
 
-          case 11:
+            _this.emitFile(filename_thumbnail, thumbnail);
+
+            callback(null, ['module.exports = {', 'bytesTotal:' + content.length + ',', 'width:' + size.width + ',', 'height:' + size.height + ',', 'color:' + JSON.stringify(color) + ',', 'uri:' + '__webpack_public_path__ + ' + JSON.stringify(filename) + ',', 'thumbnail:' + '__webpack_public_path__ + ' + JSON.stringify(filename_thumbnail) + ',', 'info:' + JSON.stringify(info) + ',', '}'].join(''));
+
+          case 19:
           case 'end':
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2, _this);
+    }, _callee3, _this);
   }))();
 };
 
@@ -918,22 +982,28 @@ module.exports = require("es6-promisify");
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("gm");
+module.exports = require("exif");
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("image-size");
+module.exports = require("gm");
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("loader-utils");
+module.exports = require("image-size");
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("loader-utils");
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
