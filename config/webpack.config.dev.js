@@ -167,6 +167,7 @@ module.exports = {
         options: {
           name: 'static/media/[name].[hash:8].[ext]',
           thumbnail: 'static/media/[name].[hash:8].thumbnail.[ext]',
+          exifKeys: [ 'createDate', 'title', 'description' ]
         },
       },
       // Process JS with Babel.

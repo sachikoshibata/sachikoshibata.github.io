@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,11 +76,11 @@ module.exports =
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _loaderUtils = __webpack_require__(6);
+var _loaderUtils = __webpack_require__(7);
 
 var _loaderUtils2 = _interopRequireDefault(_loaderUtils);
 
-var _imageSize = __webpack_require__(5);
+var _imageSize = __webpack_require__(6);
 
 var _imageSize2 = _interopRequireDefault(_imageSize);
 
@@ -88,11 +88,17 @@ var _es6Promisify = __webpack_require__(2);
 
 var _es6Promisify2 = _interopRequireDefault(_es6Promisify);
 
-var _gm = __webpack_require__(4);
+var _gm = __webpack_require__(5);
 
 var _gm2 = _interopRequireDefault(_gm);
 
-var _exif = __webpack_require__(3);
+var _exiftool = __webpack_require__(3);
+
+var _exiftool2 = _interopRequireDefault(_exiftool);
+
+var _fs = __webpack_require__(4);
+
+var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -124,18 +130,21 @@ var getColor = function getColor(path) {
 };
 
 var getInfo = function () {
-  var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(path) {
+  var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(content, filter) {
     var info;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return (0, _es6Promisify2.default)(_exif.ExifImage)(path);
+            return (0, _es6Promisify2.default)(_exiftool2.default.metadata)(content);
 
           case 2:
             info = _context.sent;
-            return _context.abrupt('return', info);
+            return _context.abrupt('return', Object.keys(info).reduce(function (v, key) {
+              if (!filter || filter.indexOf(key) >= 0) v[key] = info[key];
+              return v;
+            }, {}));
 
           case 4:
           case 'end':
@@ -145,7 +154,7 @@ var getInfo = function () {
     }, _callee, undefined);
   }));
 
-  return function getInfo(_x) {
+  return function getInfo(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
@@ -172,7 +181,7 @@ var getSize = function () {
     }, _callee2, undefined);
   }));
 
-  return function getSize(_x2) {
+  return function getSize(_x3) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -204,7 +213,7 @@ module.exports = function (content) {
           case 9:
             color = _context3.sent;
             _context3.next = 12;
-            return getInfo(_this.resourcePath);
+            return getInfo(content, options.exifKeys);
 
           case 12:
             info = _context3.sent;
@@ -982,28 +991,34 @@ module.exports = require("es6-promisify");
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("exif");
+module.exports = require("exiftool");
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("gm");
+module.exports = require("fs");
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("image-size");
+module.exports = require("gm");
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require("loader-utils");
+module.exports = require("image-size");
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("loader-utils");
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);

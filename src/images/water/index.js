@@ -66,5 +66,8 @@ module.exports = {
     require('./P1080635.jpg'),
     require('./P1080636.jpg'),
     require('./josei.jpg'),
+    require('./9870742324.jpg'),
+    require('./P1080601.jpg'),
+    require('./P1080625.jpg'),
   ]
 }

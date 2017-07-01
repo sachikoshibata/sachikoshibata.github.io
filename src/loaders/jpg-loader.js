@@ -2,7 +2,8 @@ import loaderUtils from 'loader-utils'
 import sizeOf from 'image-size'
 import promisify from 'es6-promisify'
 import gm from 'gm'
-import { ExifImage } from 'exif'
+import exif from 'exiftool'
+import fs from 'fs'
 
 const im = gm.subClass({imageMagick: true})
 
@@ -27,9 +28,12 @@ const getColor = path => new Promise((resolve, reject) => {
   })
 })
 
-const getInfo = async path => {
-  const info = await promisify(ExifImage)(path)
-  return info
+const getInfo = async (content, filter) => {
+  const info = await promisify(exif.metadata)(content)
+  return Object.keys(info).reduce((v, key) => {
+    if(!filter || filter.indexOf(key) >= 0) v[key] = info[key]
+    return v
+  }, {})
 }
 
 const getSize = async path => {
@@ -48,9 +52,9 @@ module.exports = function(content) {
 
     const size = await getSize(this.resourcePath)
     const color = await getColor(this.resourcePath)
-    const info = await getInfo(this.resourcePath)
+    const info = await getInfo(content, options.exifKeys)
 
-    //
+    // thumbnail
     const thumbnail = await getThumbnail(this.resourcePath, 120)
     const filename_thumbnail = loaderUtils.interpolateName(this, options.thumbnail, { content })
     this.emitFile(filename_thumbnail, thumbnail)
