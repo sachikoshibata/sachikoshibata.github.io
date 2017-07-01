@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import images from './image.json'
+import images from '../images'
 import scrollbarwidth from './scrollbarwidth'
 import Image from './Image'
 
@@ -41,7 +41,7 @@ export default class App extends Component {
         index:i,
         image:image
       })
-      row.width += image.info.width / image.info.height + MARGIN / SIZE
+      row.width += image.width / image.height + MARGIN / SIZE
       if(row.width * SIZE > width) {
         row.per = width / (row.width * SIZE)
         row.done = true
@@ -91,9 +91,9 @@ export default class App extends Component {
                       position:'absolute',
                       left:image.left * row.per * SIZE,
                       top:row.top * SIZE,
-                      width:row.per * SIZE / image.image.info.height * image.image.info.width,
+                      width:row.per * SIZE / image.image.height * image.image.width,
                       height:row.per * SIZE,
-                      background:image.image.info.color,
+                      background:image.image.color,
                       marginBottom:MARGIN
                     }} key={i}>
                     <Image

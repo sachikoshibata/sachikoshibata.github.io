@@ -163,7 +163,7 @@ module.exports = {
       },
       {
         test: [/\.jpe?g$/],
-        loader: require.resolve('./src/loaders/jpg-loader'),
+        loader: require.resolve('../loaders/jpg-loader'),
         options: {
           name: 'static/media/[name].[hash:8].[ext]',
         },
