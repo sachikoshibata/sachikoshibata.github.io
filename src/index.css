@@ -1,0 +1,37 @@
+body {
+  overflow-x:hidden;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background:white;
+  color:black;
+}
+.header {
+  padding:30px;
+}
+.header * {
+  margin:0;
+  padding:0;
+}
+.row {
+  position:relative;
+}
+.image {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.image img {
+  display:block;
+  width:100%;
+}
+.header h2,.header h3,.header p {
+  line-height:1.5em;
+  font-size:14px;
+}
+.header p {
+  margin-bottom:1em;
+}
