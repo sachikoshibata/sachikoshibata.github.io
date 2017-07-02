@@ -4,7 +4,23 @@ import style from '../styles/App'
 import Preview from './Preview'
 
 export default class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+    this.onResize = this.onResize.bind(this)
+  }
+  onResize() {
+    this.setState({ width: window.innerWidth })
+  }
+  componentDidMount() {
+    window.addEventListener('resize', this.onResize)
+    this.onResize()
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize)
+  }
   render() {
+    const { width } = this.state
     return (
       <div className='App'>
         <div style={style.header}>
@@ -24,7 +40,7 @@ export default class App extends Component {
               { image.name && <h4>{image.name}</h4> }
               <p>{image.description}({ image.images.length})</p>
             </div>
-            <Preview width={window.innerWidth} images={image.images} />
+            { width && <Preview width={width} images={image.images} /> }
           </div>
         )}
       </div>

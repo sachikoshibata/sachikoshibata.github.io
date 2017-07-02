@@ -11,10 +11,10 @@ export default class Preview extends Component {
     this.state = {
       rows: []
     }
-    this.onResize = this.onResize.bind(this)
+    this.updateLayout = this.updateLayout.bind(this)
   }
-  onResize() {
-    const { width, images } = this.props
+  updateLayout(width) {
+    const { images } = this.props
     const rows = []
     let left = 0, top = 0, currentRow = []
     images.forEach(image => {
@@ -41,12 +41,15 @@ export default class Preview extends Component {
       rows:rows
     })
   }
-  componentWillUnmount() {
-    // window.removeEventListener('resize', this.onResize)
+  componentWillReceiveProps(nextProps) {
+    const currentProps = this.props
+    if(currentProps.width !== nextProps.width) {
+      this.updateLayout(nextProps.width)
+    }
   }
   componentDidMount() {
-    // window.addEventListener('resize', this.onResize)
-    this.onResize()
+    const { width } = this.props
+    this.updateLayout(width)
   }
   render() {
     const { rows, height } = this.state
