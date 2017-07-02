@@ -37,8 +37,7 @@ export default class Preview extends Component {
     if(currentRow.length > 0) {
       const p = Math.min((width/HEIGHT - MARGIN/HEIGHT*(currentRow.length-1)) / left, 1)
       currentRow.height = HEIGHT * p
-        currentRow.top = top
-        top += currentRow.height + MARGIN
+      currentRow.top = top
       top += currentRow.height + MARGIN
       currentRow.forEach((row, i) => row.left += i * MARGIN/p/HEIGHT)
       rows.push(currentRow)
