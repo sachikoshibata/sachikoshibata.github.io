@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import style from '../styles/Preview'
 
 const HEIGHT = 240
-const MARGIN = 15
+const MARGIN = 5
 
 export default class Preview extends Component {
   constructor(props) {
