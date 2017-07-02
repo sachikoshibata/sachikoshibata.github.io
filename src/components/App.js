@@ -3,8 +3,6 @@ import images from '../images'
 import style from '../styles/App'
 import Preview from './Preview'
 
-console.log(images)
-
 export default class App extends Component {
   render() {
     return (
@@ -24,9 +22,9 @@ export default class App extends Component {
           <div key={i} style={style.image}>
             <div style={style.image_header}>
               { image.name && <h4>{image.name}</h4> }
-              { image.description && <p>{image.description} (画像数: { image.images.length})</p> }
+              <p>{image.description}({ image.images.length})</p>
             </div>
-            <Preview />
+            <Preview width={window.innerWidth} images={image.images} />
           </div>
         )}
       </div>

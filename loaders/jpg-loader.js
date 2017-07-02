@@ -106,14 +106,14 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 var im = _gm2.default.subClass({ imageMagick: true });
 
-var DEFAULTOPTIONS = {
-  name: '[hash].[ext]',
-  thumbnail: '[hash]_thumbnail.[ext]'
+var DEFAULTOPTIONS = { name: '[hash].[ext]',
+  thumbnail: '[hash]_thumbnail.[ext]',
+  thumbnailSize: 120
 };
 
 var getThumbnail = function getThumbnail(path, size) {
   return new Promise(function (resolve, reject) {
-    im(path).resize(size).toBuffer(function (err, buffer) {
+    im(path).resize(null, size).toBuffer(function (err, buffer) {
       err ? reject(err) : resolve(buffer);
     });
   });
@@ -218,7 +218,7 @@ module.exports = function (content) {
           case 12:
             info = _context3.sent;
             _context3.next = 15;
-            return getThumbnail(_this.resourcePath, 120);
+            return getThumbnail(_this.resourcePath, options.thumbnailSize);
 
           case 15:
             thumbnail = _context3.sent;

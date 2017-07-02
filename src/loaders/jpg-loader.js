@@ -7,13 +7,13 @@ import fs from 'fs'
 
 const im = gm.subClass({imageMagick: true})
 
-const DEFAULTOPTIONS = {
-  name: '[hash].[ext]',
-  thumbnail: '[hash]_thumbnail.[ext]'
+const DEFAULTOPTIONS = { name: '[hash].[ext]',
+  thumbnail: '[hash]_thumbnail.[ext]',
+  thumbnailSize: 120
 }
 
 const getThumbnail = (path, size) => new Promise((resolve, reject) => {
-  im(path).resize(size).toBuffer((err, buffer) => {
+  im(path).resize(null, size).toBuffer((err, buffer) => {
     err ?  reject(err) : resolve(buffer)
   })
 })
@@ -55,7 +55,7 @@ module.exports = function(content) {
     const info = await getInfo(content, options.exifKeys)
 
     // thumbnail
-    const thumbnail = await getThumbnail(this.resourcePath, 120)
+    const thumbnail = await getThumbnail(this.resourcePath, options.thumbnailSize)
     const filename_thumbnail = loaderUtils.interpolateName(this, options.thumbnail, { content })
     this.emitFile(filename_thumbnail, thumbnail)
 

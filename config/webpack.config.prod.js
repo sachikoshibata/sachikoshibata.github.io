@@ -165,6 +165,7 @@ module.exports = {
         options: {
           name: 'static/media/[name].[hash:8].[ext]',
           thumbnail: 'static/media/[name].[hash:8].thumbnail.[ext]',
+          thumbnailSize: 240,
           exifKeys: [ 'keywords', 'createDate', 'title', 'description' ]
         },
       },

@@ -10,23 +10,3 @@ body {
   letter-spacing: 0.01em;
   font-size: 13px;
 }
-
-.image {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:white;
-  box-sizing:border-box;
-  overflow:hidden;
-}
-.image img {
-  display:block;
-  width:100%;
-}
-.header h2,.header h3,.header p {
-  line-height:1.5em;
-  font-size:14px;
-}
-.header p {
-  margin-bottom:1em;
-}

@@ -1,103 +1,76 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import scrollbarwidth from './scrollbarwidth'
 import style from '../styles/Preview'
-import Image from './Image'
 
-const SIZE = 640
-const MARGIN = 30
+const HEIGHT = 240
+const MARGIN = 15
 
 export default class Preview extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      width: 0,
-      scrollTop:document.body.scrollTop
+      rows: []
     }
-    this.updateLayout = this.updateLayout.bind(this)
-    this.onScroll = this.onScroll.bind(this)
+    this.onResize = this.onResize.bind(this)
   }
-  updateLayout() {
-    const { images } = this.props
-    const width = window.innerWidth - scrollbarwidth()
-    if(width === this.state.width) return
-    let rows = []
-    images.forEach((image, i) => {
-      let row = rows[rows.length - 1]
-      if(!row || row.done) {
-        const top = rows.reduce((v, n) => {
-          v += n.per + MARGIN / SIZE
-          return v
-        }, 0)
-        row = {
-          top: top + MARGIN / SIZE,
-          images: [],
-          width: MARGIN / SIZE,
-          per: 1
-        }
-        rows.push(row)
-      }
-      row.images.push({
-        left:row.width,
-        index:i,
-        image:image
-      })
-      row.width += image.width / image.height + MARGIN / SIZE
-      if(row.width * SIZE > width) {
-        row.per = width / (row.width * SIZE)
-        row.done = true
+  onResize() {
+    const { width, images } = this.props
+    const rows = []
+    let left = 0, top = 0, currentRow = []
+    images.forEach(image => {
+      currentRow.push({ ...image, left })
+      left += image.width/image.height + MARGIN/HEIGHT
+      if(left > width/HEIGHT) {
+        left -= MARGIN/HEIGHT
+        const p = Math.min((width/HEIGHT) / left, 1)
+        currentRow.height = HEIGHT * p
+        top += currentRow.height + MARGIN
+        left = 0
+        rows.push(currentRow)
+        currentRow = []
       }
     })
+    if(currentRow.length > 0) {
+      const p = Math.min((width/HEIGHT) / left, 1)
+      currentRow.height = HEIGHT * p
+      top += currentRow.height + MARGIN
+      rows.push(currentRow)
+    }
     this.setState({
-      width: width,
-      height:window.innerHeight,
+      height: top - MARGIN,
       rows:rows
     })
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateLayout)
-  }
-  onScroll() {
-    const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
-    this.setState({ scrollTop })
+    // window.removeEventListener('resize', this.onResize)
   }
   componentDidMount() {
-    document.addEventListener('scroll', this.onScroll)
-    window.addEventListener('resize', this.updateLayout)
-    this.updateLayout()
+    // window.addEventListener('resize', this.onResize)
+    this.onResize()
   }
   render() {
-    const { height, scrollTop, rows } = this.state
+    const { rows, height } = this.state
+    const { width } = this.props
     return (
-      <div style={style.component} ref='container'>
-        { rows && rows.map((row, r) => {
-          return (
-            <div key={r} className='row'>
-              { row.images.map((image, i) => {
-                return (
-                  <div className='image' style={{
-                    position:'absolute',
-                    left:image.left * row.per * SIZE,
-                    top:row.top * SIZE,
-                    width:row.per * SIZE / image.image.height * image.image.width,
-                    height:row.per * SIZE,
-                    background:image.image.color,
-                    marginBottom:MARGIN
-                  }} key={i}>
-                  <Image
-                    alt=''
-                    top={this.refs.container.offsetTop + row.top * SIZE}
-                    windowHeight={height}
-                    height={row.per * SIZE}
-                    scrollTop={scrollTop}
-                    src={image.image.url}
-                  />
-                </div>
-                )
-              })}
-            </div>
-          )
-        })}
+      <div style={{ ...style.component, width: width, height: height }}>
+        { rows && rows.map((row, i) => 
+          <div key={i} style={{ ...style.row, height: row.height, marginBottom: MARGIN }}>
+            { row.map((image, j) =>
+              <div
+                key={j}
+                style={{
+                  ...style.imgContainer,
+                  left: row.height * image.left,
+                  width: row.height * image.width/image.height,
+                  height: row.height,
+                  backgroundColor:image.color,
+                }}
+              >
+                <img style={style.img} src={image.thumbnail} alt={image.info.title} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     )
   }
