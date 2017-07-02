@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import style from '../styles/Preview'
+import Image from './Image'
 
 const HEIGHT = 240
 const MARGIN = 5
@@ -56,6 +57,7 @@ export default class Preview extends Component {
   }
   componentDidMount() {
     this.onResize()
+    this.onScroll()
     window.addEventListener('resize', this.onResize)
     window.addEventListener('scroll', this.onScroll)
   }
@@ -83,7 +85,7 @@ export default class Preview extends Component {
               >
                 { (offsetTop + row.top < scrollTop + windowHeight &&
                   scrollTop < offsetTop + row.top + row.height) &&
-                    <img style={style.img} src={image.thumbnail} alt={image.info.title} />
+                    <Image style={style.img} src={image.thumbnail} alt={image.info.title} />
                 }
               </div>
             )}
