@@ -1,6 +1,6 @@
 module.exports = {
-  name: '雑草(Main)',
-  description: '雑草をたくさん書いています',
+  name: '油彩',
+  description: 'メインの油彩です',
   images: [
     require('./9870726845.jpg'),
     require('./9870730925.jpg'),

@@ -22,7 +22,7 @@ export default class App extends Component {
           <div key={i} style={style.image}>
             <div style={style.image_header}>
               { image.name && <h4>{image.name}</h4> }
-              <p>{image.description}({ image.images.length})</p>
+              { image.description && <p>{image.description}</p> }
             </div>
             <Preview images={image.images} />
           </div>
