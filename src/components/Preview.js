@@ -19,21 +19,22 @@ export default class Preview extends Component {
     let left = 0, top = 0, currentRow = []
     images.forEach(image => {
       currentRow.push({ ...image, left })
-      left += image.width/image.height + MARGIN/HEIGHT
+      left += image.width/image.height
       if(left > width/HEIGHT) {
-        left -= MARGIN/HEIGHT
-        const p = Math.min((width/HEIGHT) / left, 1)
+        const p = Math.min((width/HEIGHT - MARGIN/HEIGHT*(currentRow.length-1)) / left, 1)
         currentRow.height = HEIGHT * p
         top += currentRow.height + MARGIN
         left = 0
+        currentRow.forEach((row, i) => row.left += i * MARGIN/p/HEIGHT)
         rows.push(currentRow)
         currentRow = []
       }
     })
     if(currentRow.length > 0) {
-      const p = Math.min((width/HEIGHT) / left, 1)
+      const p = Math.min((width/HEIGHT - MARGIN/HEIGHT*(currentRow.length-1)) / left, 1)
       currentRow.height = HEIGHT * p
       top += currentRow.height + MARGIN
+      currentRow.forEach((row, i) => row.left += i * MARGIN/p/HEIGHT)
       rows.push(currentRow)
     }
     this.setState({
