@@ -84,7 +84,7 @@ export default class Preview extends Component {
               >
                 { (offsetTop + row.top < scrollTop + windowHeight &&
                   scrollTop < offsetTop + row.top + row.height) &&
-                    <Image style={style.img} src={image.thumbnail} alt={image.info.title} />
+                    <Image to={`/${image.id}`} style={style.img} src={image.thumbnail} alt={image.info.title} />
                 }
               </div>
             )}

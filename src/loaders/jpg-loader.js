@@ -47,6 +47,7 @@ module.exports = function(content) {
     const callback = this.async()
     const options = { ...DEFAULTOPTIONS, ...loaderUtils.getOptions(this) }
     const filename = loaderUtils.interpolateName(this, options.name, { content })
+    const hash = loaderUtils.getHashDigest(content, 'md5', 'hex')
 
     this.emitFile(filename, content)
 
@@ -61,6 +62,7 @@ module.exports = function(content) {
 
     callback(null, [
       'module.exports = {',
+      'id:' + JSON.stringify(hash) + ',',
       'bytesTotal:' + content.length + ',',
       'width:' + size.width + ',',
       'height:' + size.height + ',',

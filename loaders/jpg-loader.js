@@ -190,7 +190,7 @@ module.exports = function (content) {
   var _this = this;
 
   _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
-    var callback, options, filename, size, color, info, thumbnail, filename_thumbnail;
+    var callback, options, filename, hash, size, color, info, thumbnail, filename_thumbnail;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -198,37 +198,38 @@ module.exports = function (content) {
             callback = _this.async();
             options = _extends({}, DEFAULTOPTIONS, _loaderUtils2.default.getOptions(_this));
             filename = _loaderUtils2.default.interpolateName(_this, options.name, { content: content });
+            hash = _loaderUtils2.default.getHashDigest(content, 'md5', 'hex');
 
 
             _this.emitFile(filename, content);
 
-            _context3.next = 6;
+            _context3.next = 7;
             return getSize(_this.resourcePath);
 
-          case 6:
+          case 7:
             size = _context3.sent;
-            _context3.next = 9;
+            _context3.next = 10;
             return getColor(_this.resourcePath);
 
-          case 9:
+          case 10:
             color = _context3.sent;
-            _context3.next = 12;
+            _context3.next = 13;
             return getInfo(content, options.exifKeys);
 
-          case 12:
+          case 13:
             info = _context3.sent;
-            _context3.next = 15;
+            _context3.next = 16;
             return getThumbnail(_this.resourcePath, options.thumbnailSize);
 
-          case 15:
+          case 16:
             thumbnail = _context3.sent;
             filename_thumbnail = _loaderUtils2.default.interpolateName(_this, options.thumbnail, { content: content });
 
             _this.emitFile(filename_thumbnail, thumbnail);
 
-            callback(null, ['module.exports = {', 'bytesTotal:' + content.length + ',', 'width:' + size.width + ',', 'height:' + size.height + ',', 'color:' + JSON.stringify(color) + ',', 'uri:' + '__webpack_public_path__ + ' + JSON.stringify(filename) + ',', 'thumbnail:' + '__webpack_public_path__ + ' + JSON.stringify(filename_thumbnail) + ',', 'info:' + JSON.stringify(info) + ',', '}'].join(''));
+            callback(null, ['module.exports = {', 'id:' + JSON.stringify(hash) + ',', 'bytesTotal:' + content.length + ',', 'width:' + size.width + ',', 'height:' + size.height + ',', 'color:' + JSON.stringify(color) + ',', 'uri:' + '__webpack_public_path__ + ' + JSON.stringify(filename) + ',', 'thumbnail:' + '__webpack_public_path__ + ' + JSON.stringify(filename_thumbnail) + ',', 'info:' + JSON.stringify(info) + ',', '}'].join(''));
 
-          case 19:
+          case 20:
           case 'end':
             return _context3.stop();
         }
