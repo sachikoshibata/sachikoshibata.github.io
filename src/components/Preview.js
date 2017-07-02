@@ -11,10 +11,12 @@ export default class Preview extends Component {
     this.state = {
       rows: []
     }
-    this.updateLayout = this.updateLayout.bind(this)
+    this.onResize = this.onResize.bind(this)
+    this.onScroll = this.onScroll.bind(this)
   }
-  updateLayout(width) {
+  onResize() {
     const { images } = this.props
+    const width = window.innerWidth
     const rows = []
     let left = 0, top = 0, currentRow = []
     images.forEach(image => {
@@ -23,6 +25,7 @@ export default class Preview extends Component {
       if(left > width/HEIGHT) {
         const p = Math.min((width/HEIGHT - MARGIN/HEIGHT*(currentRow.length-1)) / left, 1)
         currentRow.height = HEIGHT * p
+        currentRow.top = top
         top += currentRow.height + MARGIN
         left = 0
         currentRow.forEach((row, i) => row.left += i * MARGIN/p/HEIGHT)
@@ -33,30 +36,38 @@ export default class Preview extends Component {
     if(currentRow.length > 0) {
       const p = Math.min((width/HEIGHT - MARGIN/HEIGHT*(currentRow.length-1)) / left, 1)
       currentRow.height = HEIGHT * p
+        currentRow.top = top
+        top += currentRow.height + MARGIN
       top += currentRow.height + MARGIN
       currentRow.forEach((row, i) => row.left += i * MARGIN/p/HEIGHT)
       rows.push(currentRow)
     }
     this.setState({
+      windowHeight: window.innerHeight,
       height: top - MARGIN,
       rows:rows
     })
   }
-  componentWillReceiveProps(nextProps) {
-    const currentProps = this.props
-    if(currentProps.width !== nextProps.width) {
-      this.updateLayout(nextProps.width)
-    }
+  onScroll() {
+    this.setState({
+      scrollTop: document.body.scrollTop,
+      offsetTop: this.refs.component.offsetTop
+    })
   }
   componentDidMount() {
-    const { width } = this.props
-    this.updateLayout(width)
+    this.onResize()
+    window.addEventListener('resize', this.onResize)
+    window.addEventListener('scroll', this.onScroll)
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize)
+    window.removeEventListener('scroll', this.onScroll)
   }
   render() {
-    const { rows, height } = this.state
+    const { windowHeight, scrollTop, offsetTop, rows, height } = this.state
     const { width } = this.props
     return (
-      <div style={{ ...style.component, width: width, height: height }}>
+      <div ref='component' style={{ ...style.component, width: width, height: height }}>
         { rows && rows.map((row, i) => 
           <div key={i} style={{ ...style.row, height: row.height, marginBottom: MARGIN }}>
             { row.map((image, j) =>
@@ -70,7 +81,10 @@ export default class Preview extends Component {
                   backgroundColor:image.color,
                 }}
               >
-                <img style={style.img} src={image.thumbnail} alt={image.info.title} />
+                { (offsetTop + row.top < scrollTop + windowHeight &&
+                  scrollTop < offsetTop + row.top + row.height) &&
+                    <img style={style.img} src={image.thumbnail} alt={image.info.title} />
+                }
               </div>
             )}
           </div>

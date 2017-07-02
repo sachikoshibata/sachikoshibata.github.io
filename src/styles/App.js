@@ -4,8 +4,6 @@ export default {
     paddingTop: 90,
     paddingBottom: 60,
   },
-  image: {
-  },
   image_header: {
     padding: 30,
   }

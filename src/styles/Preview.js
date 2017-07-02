@@ -1,6 +1,5 @@
 export default {
   component: {
-    position: 'relative',
   },
   row: {
     position: 'relative'
