@@ -22,12 +22,16 @@ export default class Viewer extends Component {
     const image = imageMap[id]
     if(!image) return false
     return (
-      <div style={{
-        ...style.component,
-        backgroundImage: `url(${image.uri})`
-      }}>
-        <div style={style.navi}>
+      <div
+        style={{
+          ...style.component,
+          backgroundImage: `url(${image.uri})`
+        }}
+      >
+        <div style={style.navi_left}>
           { image.prev && <Link style={style.naviItem} to={`/${image.prev.id}`}>←</Link> }
+        </div>
+        <div style={style.navi}>
           { image.next && <Link style={style.naviItem} to={`/${image.next.id}`}>→</Link> }
           <Link style={style.naviItem} to='/'>x</Link>
         </div>

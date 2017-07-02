@@ -12,10 +12,15 @@ export default {
     flexDirection: 'column',
     flexShrink: 0,
     flexGrow: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: '#000',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',
     backgroundSize: 'contain'
+  },
+  navi_left: {
+    position: 'fixed',
+    top: 20,
+    left: 20
   },
   navi: {
     position: 'fixed',
@@ -30,9 +35,9 @@ export default {
   },
   info: {
     boxSizing: 'border-box',
-    minWidth: 180,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    color: '#fff',
     position: 'fixed',
     bottom: 20,
     left: 20
