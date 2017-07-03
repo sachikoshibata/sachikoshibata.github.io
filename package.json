@@ -60,7 +60,7 @@
     "build:script": "NODE_ENV=production webpack --config=config/webpack.config.script.js",
     "test": "node scripts/test.js --env=jsdom",
     "prerelease": "npm run build",
-    "release": "aws s3 sync --delete build/ s3://sachikoshibata.jp && aws cloudfront create-invalidation --distribution-id E1USVLMWR7Y6J1 --paths /index.html /manifest.json /asset-manifest.json"
+    "release": "aws s3 sync --delete build/ s3://sachikoshibata.jp && aws cloudfront create-invalidation --distribution-id E1USVLMWR7Y6J1 --paths /index.html /manifest.json /asset-manifest.json /service-worker.js"
   },
   "jest": {
     "collectCoverageFrom": [

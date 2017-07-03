@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import style from '../styles/Viewer'
 import clusters from '../images'
@@ -28,6 +29,19 @@ export default class Viewer extends Component {
   constructor(props) {
     super(props)
     this.state = {}
+    this.onKeyDown = this.onKeyDown.bind(this)
+  }
+  onKeyDown(evt) {
+    const { image } = this.state
+    if(!image) return
+    switch(evt.code) {
+      case 'ArrowRight':
+        this.context.router.history.push(`/${image.next ? image.next.id : ''}`)
+        break
+      case 'ArrowLeft':
+        this.context.router.history.push(`/${image.prev ? image.prev.id : ''}`)
+        break
+    }
   }
   async updateImage(id) {
     try {
@@ -57,6 +71,10 @@ export default class Viewer extends Component {
     const { match } = this.props
     const id = match.params.id
     this.updateImage(id)
+    document.body.addEventListener('keydown', this.onKeyDown)
+  }
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this.onKeyDown)
   }
   render() {
     const { uri, width, height, image } = this.state
@@ -78,4 +96,7 @@ export default class Viewer extends Component {
       </div>
     )
   }
+}
+Viewer.contextTypes = {
+  router: PropTypes.object.isRequired
 }
