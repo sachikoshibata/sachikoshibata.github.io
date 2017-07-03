@@ -50,7 +50,7 @@ export default class Preview extends Component {
   }
   onScroll() {
     this.setState({
-      scrollTop: document.body.scrollTop,
+      scrollTop: document.documentElement.scrollTop || document.body.scrollTop,
       offsetTop: this.refs.component.offsetTop
     })
   }
