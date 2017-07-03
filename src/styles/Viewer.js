@@ -42,7 +42,7 @@ export default {
     bottom: 20,
     left: 20
   },
-  image: {
+  cover: {
     display: 'block',
     position: 'absolute',
     left: 0,

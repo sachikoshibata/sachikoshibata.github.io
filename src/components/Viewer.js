@@ -17,19 +17,45 @@ clusters.forEach(cluster => {
 })
 
 export default class Viewer extends Component {
-  render() {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+  componentWillReceiveProps(nextProps) {
+    const id = this.props.match.params.id
+    const nextId = nextProps.match.params.id
+    if(id !== nextId) {
+      const image = imageMap[nextId]
+      const p = Math.min(window.innerWidth/image.width, window.innerHeight/image.height, 1)
+      this.setState({
+        image,
+        uri: null,
+        width: image.width * p,
+        height: image.height * p
+      })
+      setTimeout(() => this.setState({ uri: image.uri }), 100)
+    }
+  }
+  componentDidMount() {
     const { match } = this.props
     const id = match.params.id
     const image = imageMap[id]
+    const p = Math.min(window.innerWidth/image.width, window.innerHeight/image.height, 1)
+    this.setState({
+      image,
+      uri: image.uri,
+      width: image.width * p,
+      height: image.height * p
+    })
+  }
+
+  render() {
+    const { uri, width, height, image } = this.state
     if(!image) return false
     return (
-      <div
-        style={{
-          ...style.component,
-          backgroundImage: `url(${image.uri})`
-        }}
-      >
-        <Link style={style.image} to={`/${image.next ? image.next.id : ''}`} />
+      <div style={style.component}>
+        <img width={width} height={height} src={uri} />
+        <Link style={style.cover} to={`/${image.next ? image.next.id : ''}`}/>
         <div style={style.navi_left}>
           { image.prev && <Link style={style.naviItem} to={`/${image.prev.id}`}>←</Link> }
         </div>
