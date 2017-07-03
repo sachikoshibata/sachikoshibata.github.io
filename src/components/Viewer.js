@@ -18,11 +18,13 @@ clusters.forEach(cluster => {
 
 export default class Viewer extends Component {
   render() {
-    const id = this.props.match.params.id
+    const { match } = this.props
+    const id = match.params.id
     const image = imageMap[id]
     if(!image) return false
     return (
-      <div
+      <Link
+        to={`/${image.next ? image.next.id : ''}`}
         style={{
           ...style.component,
           backgroundImage: `url(${image.uri})`
@@ -38,7 +40,7 @@ export default class Viewer extends Component {
         <div style={style.info}>
           <b>{image.info.title}</b>&nbsp;{image.info.description}
         </div>
-      </div>
+      </Link>
     )
   }
 }

@@ -9,10 +9,9 @@ import registerServiceWorker from './registerServiceWorker'
 
 ReactDOM.render(
   <Router>
-    <div>
-      <Route exact path='/' component={App} />
+    <App>
       <Route path='/:id' component={Viewer} />
-    </div>
+    </App>
   </Router>
   , document.getElementById('root'))
 

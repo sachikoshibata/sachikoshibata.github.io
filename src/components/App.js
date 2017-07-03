@@ -5,6 +5,7 @@ import Preview from './Preview'
 
 export default class App extends Component {
   render() {
+    const { children } = this.props
     return (
       <div style={style.component}>
         <div style={style.header}>
@@ -27,6 +28,7 @@ export default class App extends Component {
             <Preview images={image.images} />
           </div>
         )}
+        { children }
       </div>
     )
   }
