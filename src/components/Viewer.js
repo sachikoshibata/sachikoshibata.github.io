@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom'
 import style from '../styles/Viewer'
 import clusters from '../images'
 
+const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
+const loadImage = uri => new Promise((resolve, reject) => {
+  const image = document.createElement('img')
+  image.onload = resolve
+  image.onerror = reject
+  image.src = uri
+})
+
 const imageMap = {}
 let prev
 clusters.forEach(cluster => {
@@ -21,11 +29,9 @@ export default class Viewer extends Component {
     super(props)
     this.state = {}
   }
-  componentWillReceiveProps(nextProps) {
-    const id = this.props.match.params.id
-    const nextId = nextProps.match.params.id
-    if(id !== nextId) {
-      const image = imageMap[nextId]
+  async updateImage(id) {
+    try {
+      const image = imageMap[id]
       const p = Math.min(window.innerWidth/image.width, window.innerHeight/image.height, 1)
       this.setState({
         image,
@@ -33,22 +39,25 @@ export default class Viewer extends Component {
         width: image.width * p,
         height: image.height * p
       })
-      setTimeout(() => this.setState({ uri: image.uri }), 100)
+      await sleep(100)
+      if(this.props.match.params.id !== id) return
+      this.setState({ uri: image.thumbnail })
+      await loadImage(image.uri)
+      if(this.props.match.params.id !== id) return
+      this.setState({ uri: image.uri })
+    } catch(err) {
     }
+  }
+  componentWillReceiveProps(nextProps) {
+    const id = this.props.match.params.id
+    const nextId = nextProps.match.params.id
+    if(id !== nextId) this.updateImage(nextId)
   }
   componentDidMount() {
     const { match } = this.props
     const id = match.params.id
-    const image = imageMap[id]
-    const p = Math.min(window.innerWidth/image.width, window.innerHeight/image.height, 1)
-    this.setState({
-      image,
-      uri: image.uri,
-      width: image.width * p,
-      height: image.height * p
-    })
+    this.updateImage(id)
   }
-
   render() {
     const { uri, width, height, image } = this.state
     if(!image) return false
