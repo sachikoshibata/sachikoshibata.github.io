@@ -1,3 +1,9 @@
-# sachikoshibata.jp source code
+[https://sachikoshibata.jp](https://sachikoshibata.jp)
 
-React + webpack.
+### Author
+
+Yusuke Shibata
+
+### License
+
+MIT
