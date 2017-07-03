@@ -28,10 +28,15 @@ const getColor = path => new Promise((resolve, reject) => {
   })
 })
 
-const getInfo = async (content, filter) => {
+const getInfo = async (content, keys) => {
   const info = await promisify(exif.metadata)(content)
-  return Object.keys(info).reduce((v, key) => {
-    if(!filter || filter.indexOf(key) >= 0) v[key] = info[key]
+  console.log(info)
+  return keys.reduce((v, key) => {
+    if(Array.isArray(key)) {
+      v[key[0]] = key[1](info)
+    } else if(info[key]) {
+      v[key] = info[key]
+    }
     return v
   }, {})
 }

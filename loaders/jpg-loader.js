@@ -130,7 +130,7 @@ var getColor = function getColor(path) {
 };
 
 var getInfo = function () {
-  var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(content, filter) {
+  var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(content, keys) {
     var info;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -141,8 +141,12 @@ var getInfo = function () {
 
           case 2:
             info = _context.sent;
-            return _context.abrupt('return', Object.keys(info).reduce(function (v, key) {
-              if (!filter || filter.indexOf(key) >= 0) v[key] = info[key];
+            return _context.abrupt('return', keys.reduce(function (v, key) {
+              if (Array.isArray(key)) {
+                v[key[0]] = key[1](info);
+              } else if (info[key]) {
+                v[key] = info[key];
+              }
               return v;
             }, {}));
 

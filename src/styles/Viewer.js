@@ -43,5 +43,11 @@ export default {
     left: 20
   },
   image: {
+    display: 'block',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0
   }
 }

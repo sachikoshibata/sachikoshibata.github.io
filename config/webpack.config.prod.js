@@ -166,7 +166,12 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
           thumbnail: 'static/media/[name].[hash:8].thumbnail.[ext]',
           thumbnailSize: 240,
-          exifKeys: [ 'keywords', 'createDate', 'title', 'description' ]
+          exifKeys: [
+            [ 'keyword', exif => (exif.keywords||'').split(',').map(v => v.trim()) ],
+            'createDate',
+            'title',
+            'description'
+          ]
         },
       },
       // Process JS with Babel.
