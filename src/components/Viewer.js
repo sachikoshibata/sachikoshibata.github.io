@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import style from '../styles/Viewer'
 import clusters from '../images'
+import './progress.css'
 
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
 const loadImage = uri => new Promise((resolve, reject) => {
   const image = document.createElement('img')
@@ -49,16 +51,20 @@ export default class Viewer extends Component {
       const p = Math.min(window.innerWidth/image.width, window.innerHeight/image.height, 1)
       this.setState({
         image,
-        uri: null,
+        uri: BLANK,
         width: image.width * p,
-        height: image.height * p
+        height: image.height * p,
+        loading: true
       })
       await sleep(100)
       if(this.props.match.params.id !== id) return
       this.setState({ uri: image.thumbnail })
       await loadImage(image.uri)
       if(this.props.match.params.id !== id) return
-      this.setState({ uri: image.uri })
+      this.setState({
+        uri: image.uri,
+        loading: false
+      })
     } catch(err) {
     }
   }
@@ -77,11 +83,12 @@ export default class Viewer extends Component {
     document.body.removeEventListener('keydown', this.onKeyDown)
   }
   render() {
-    const { uri, width, height, image } = this.state
+    const { loading, uri, width, height, image } = this.state
     if(!image) return false
     return (
       <div style={style.component}>
         <img width={width} height={height} src={uri} />
+        { loading && <div style={style.progress} className='progress-line' /> }
         <Link style={style.cover} to={`/${image.next ? image.next.id : ''}`}/>
         <div style={style.navi_left}>
           { image.prev && <Link style={style.naviItem} to={`/${image.prev.id}`}>←</Link> }
