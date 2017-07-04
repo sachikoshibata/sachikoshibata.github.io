@@ -87,9 +87,10 @@ export default class Viewer extends Component {
     if(!image) return false
     return (
       <div style={style.component}>
-        <img width={width} height={height} src={uri} />
+        <Link style={{ width, height }} to={`/${image.next ? image.next.id : ''}`}>
+          <img width={width} height={height} src={uri} />
+        </Link>
         { loading && <div style={style.progress} className='progress-line' /> }
-        <Link style={style.cover} to={`/${image.next ? image.next.id : ''}`}/>
         <div style={style.navi_left}>
           { image.prev && <Link style={style.naviItem} to={`/${image.prev.id}`}>←</Link> }
         </div>

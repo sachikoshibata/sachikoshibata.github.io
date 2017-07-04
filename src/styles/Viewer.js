@@ -42,14 +42,6 @@ export default {
     bottom: 20,
     left: 20
   },
-  cover: {
-    display: 'block',
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0
-  },
   progress: {
     position: 'absolute',
     bottom: 0,
