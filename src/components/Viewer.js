@@ -37,6 +37,9 @@ export default class Viewer extends Component {
     const { image } = this.state
     if(!image) return
     switch(evt.code) {
+      case 'Escape':
+        this.context.router.history.push('/')
+        break
       case 'ArrowRight':
         this.context.router.history.push(`/${image.next ? image.next.id : ''}`)
         break
