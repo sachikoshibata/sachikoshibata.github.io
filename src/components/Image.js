@@ -10,7 +10,7 @@ export default class Image extends Component {
   }
   async init() {
     const { src } = this.props
-    await sleep(500)
+    await sleep(200)
     if(!this._mounted) return
     this.setState({ src })
   }
