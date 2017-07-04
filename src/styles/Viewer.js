@@ -28,10 +28,13 @@ export default {
     right: 20
   },
   naviItem: {
+    display: 'inline-block',
+    minWidth: 15,
     backgroundColor: '#fff',
     marginLeft: 10,
     padding: 5,
-    textDecoration: 'none'
+    textDecoration: 'none',
+    textAlign: 'center'
   },
   info: {
     boxSizing: 'border-box',
