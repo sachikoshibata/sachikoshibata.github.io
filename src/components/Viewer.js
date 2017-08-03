@@ -1,16 +1,35 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import style from '../styles/Viewer'
 import clusters from '../images'
 import './progress.css'
+import { withRouter } from 'react-router'
 
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
-const loadImage = uri => new Promise((resolve, reject) => {
+// const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
+
+let _cancelLoading
+const cancelLoading = () => {
+  const cancelLoading = _cancelLoading
+  if(cancelLoading) {
+    _cancelLoading = null
+    cancelLoading()
+  }
+}
+const loadImage = (uri) => new Promise((resolve, reject) => {
+  cancelLoading()
   const image = document.createElement('img')
-  image.onload = resolve
-  image.onerror = reject
+  _cancelLoading = reject
+  image.onload = () => {
+    if(_cancelLoading !== reject) return
+    _cancelLoading = null
+    resolve()
+  }
+  image.onerror = () => {
+    if(_cancelLoading !== reject) return
+    _cancelLoading = null
+    reject()
+  }
   image.src = uri
 })
 
@@ -27,24 +46,28 @@ clusters.forEach(cluster => {
   })
 })
 
-export default class Viewer extends Component {
+class Viewer extends Component {
   constructor(props) {
     super(props)
     this.state = {}
     this.onKeyDown = this.onKeyDown.bind(this)
   }
   onKeyDown(evt) {
+    const { history } = this.props
     const { image } = this.state
     if(!image) return
     switch(evt.code) {
       case 'Escape':
-        this.context.router.history.push('/')
+        history.push('/')
         break
       case 'ArrowRight':
-        this.context.router.history.push(`/${image.next ? image.next.id : ''}`)
+        history.push(`/${image.next ? image.next.id : ''}`)
         break
       case 'ArrowLeft':
-        this.context.router.history.push(`/${image.prev ? image.prev.id : ''}`)
+        history.push(`/${image.prev ? image.prev.id : ''}`)
+        break
+
+      default:
         break
     }
   }
@@ -59,20 +82,19 @@ export default class Viewer extends Component {
         height: image.height * p,
         loading: true
       })
-      await sleep(100)
-      if(this.props.match.params.id !== id) return
+
+      await loadImage(image.thumbnail)
       this.setState({ uri: image.thumbnail })
+
       await loadImage(image.uri)
-      if(this.props.match.params.id !== id) return
-      this.setState({
-        uri: image.uri,
-        loading: false
-      })
+      this.setState({ uri: image.uri, loading: false })
+
     } catch(err) {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const id = this.props.match.params.id
+    const currentProps = this.props
+    const id = currentProps.match.params.id
     const nextId = nextProps.match.params.id
     if(id !== nextId) this.updateImage(nextId)
   }
@@ -91,7 +113,7 @@ export default class Viewer extends Component {
     return (
       <div style={style.component}>
         <Link style={{ width, height }} to={`/${image.next ? image.next.id : ''}`}>
-          <img width={width} height={height} src={uri} />
+          <img alt={uri} width={width} height={height} src={uri} />
         </Link>
         { loading && <div style={style.progress} className='progress-line' /> }
         <div style={style.navi_left}>
@@ -108,6 +130,5 @@ export default class Viewer extends Component {
     )
   }
 }
-Viewer.contextTypes = {
-  router: PropTypes.object.isRequired
-}
+
+export default withRouter(Viewer)
