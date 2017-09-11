@@ -26,7 +26,6 @@ const images = [
   require('./9870737975.jpg'),
   require('./9870738135.jpg'),
   require('./9870738386.jpg'),
-  require('./9870738475.jpg'),
   require('./9870738525.jpg'),
   require('./9870739014.jpg'),
   require('./9870739034.jpg'),
@@ -95,12 +94,12 @@ export default [
   {
     id: 'water',
     name: '水彩',
-    description: '暇な時に水彩も書いています',
+    description: '水彩も描いています',
     images: images.filter(image => image.info.keyword.indexOf('water') >= 0)
   },
   {
     id: 'old',
-    name: '昔に描いたもの',
+    name: '昔に描いたものです',
     images: images.filter(image => image.info.keyword.indexOf('old') >= 0)
   }
 ]
