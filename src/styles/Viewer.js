@@ -17,7 +17,6 @@ export default {
     right: 0,
     top: 0,
     bottom: 0,
-    overflow: 'auto',
     backgroundColor: '#000',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',
@@ -30,17 +29,21 @@ export default {
   },
   navi: {
     position: 'fixed',
-    top: 20,
-    right: 20
+    top: 10,
+    right: 10,
+    display: 'flex',
+    flexDirection: 'row'
   },
   naviItem: {
-    display: 'inline-block',
-    minWidth: 15,
+    display: 'flex',
+    width: 16,
+    height: 16,
     backgroundColor: '#fff',
     marginLeft: 10,
     padding: 5,
     textDecoration: 'none',
-    textAlign: 'center'
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   info: {
     boxSizing: 'border-box',
