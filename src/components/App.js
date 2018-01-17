@@ -1,14 +1,21 @@
 import React, { Component } from 'react'
 import images from '../images'
-import style from '../styles/App'
 import Preview from './Preview'
+import styled from 'styled-components'
+
+const Header = styled.div`
+  padding: 90px 30px;
+`
+const ImageHeader = styled.div`
+  padding: 30px;
+`
 
 export default class App extends Component {
   render() {
     const { children } = this.props
     return (
-      <div style={style.component}>
-        <div style={style.header}>
+      <div>
+        <Header>
           <h2>柴田幸子</h2>
           <h3>Sachiko Shibata</h3>
           <p>
@@ -18,13 +25,13 @@ export default class App extends Component {
             メールはこちら: <a href='mailto:sachiko@yansu.jp'>sachiko@yansu.jp</a><br/>
             &copy;2016 Sachiko Shibata all rights reserved.<br/>
           </p>
-        </div>
+        </Header>
         { images.map((image, i) => 
-          <div key={i} style={style.image}>
-            <div style={style.image_header}>
+          <div key={i}>
+            <ImageHeader>
               { image.name && <h4>{image.name}</h4> }
               { image.description && <p>{image.description}</p> }
-            </div>
+            </ImageHeader>
             <Preview images={image.images} />
           </div>
         )}

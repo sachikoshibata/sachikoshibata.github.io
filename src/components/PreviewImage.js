@@ -1,7 +1,13 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
+
+const Img = styled.img`
+  display: block;
+  width: 100%;
+`
 
 export default class Image extends Component {
   constructor(props) {
@@ -22,9 +28,13 @@ export default class Image extends Component {
     this._mounted = false
   }
   render() {
-    const { to, alt, style } = this.props
+    const { to, alt } = this.props
     const { src } = this.state
     if(!src) return false
-    return <Link to={to}><img src={src} alt={alt} style={style} /></Link>
+    return (
+      <Link to={to}>
+        <Img src={src} alt={alt} />
+      </Link>
+    )
   }
 }

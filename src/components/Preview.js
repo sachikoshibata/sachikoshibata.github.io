@@ -1,10 +1,27 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import style from '../styles/Preview'
 import Image from './PreviewImage'
+import { findDOMNode } from 'react-dom'
+import styled from 'styled-components'
 
 const HEIGHT = 240
 const MARGIN = 5
+
+const Row = styled.div`
+  position: relative;
+  margin-bottom: ${MARGIN}px;
+  height: ${prop => prop.height}px;
+`
+const ImageContainer = styled.div`
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+`
 
 export default class Preview extends Component {
   constructor(props) {
@@ -49,9 +66,10 @@ export default class Preview extends Component {
     })
   }
   onScroll() {
+    const offsetTop = findDOMNode(this).offsetTop
     this.setState({
       scrollTop: document.documentElement.scrollTop || document.body.scrollTop,
-      offsetTop: this.refs.component.offsetTop
+      offsetTop
     })
   }
   componentDidMount() {
@@ -68,14 +86,13 @@ export default class Preview extends Component {
     const { windowHeight, scrollTop, offsetTop, rows, height } = this.state
     const { width } = this.props
     return (
-      <div ref='component' style={{ ...style.component, width: width, height: height }}>
+      <div style={{ width, height }}>
         { rows && rows.map((row, i) => 
-          <div key={i} style={{ ...style.row, height: row.height, marginBottom: MARGIN }}>
+          <Row key={i} height={row.height}>
             { row.map((image, j) =>
-              <div
+              <ImageContainer
                 key={j}
                 style={{
-                  ...style.imgContainer,
                   left: row.height * image.left,
                   width: row.height * image.width/image.height,
                   height: row.height,
@@ -84,11 +101,11 @@ export default class Preview extends Component {
               >
                 { (offsetTop + row.top < scrollTop + windowHeight &&
                   scrollTop < offsetTop + row.top + row.height) &&
-                    <Image to={`/${image.id}`} style={style.img} src={image.thumbnail} alt={image.info.title} />
+                    <Image to={`/${image.id}`} src={image.thumbnail} alt={image.info.title} />
                 }
-              </div>
+              </ImageContainer>
             )}
-          </div>
+          </Row>
         )}
       </div>
     )

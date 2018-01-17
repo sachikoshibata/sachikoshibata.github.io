@@ -1,8 +1,20 @@
 import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
-import style from '../styles/ViewerImage'
 import { imageMap } from '../images'
 import './progress.css'
+import styled from 'styled-components'
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+const Progress = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`
 
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
@@ -88,17 +100,17 @@ export default class ViewerImage extends Component {
     window.removeEventListener('resize', this.onResize)
   }
   render() {
-    const { imageid, style: _style, ...props } = this.props
+    const { imageid, style, ...props } = this.props
     const { opacity, loading, uri, width, height, image } = this.state
     return (
-      <div style={{ ...style.component, ..._style }} {...props}>
+      <Container style={style} {...props}>
         { image &&
           <div style={{backgroundColor: image.color}}>
             <img style={{ opacity, display: 'block' }} alt={uri} width={width} height={height} src={uri} />
           </div>
         }
-        { loading && <div style={style.progress} className='progress-line' /> }
-      </div>
+        { loading && <Progress className='progress-line' /> }
+      </Container>
     )
   }
 }
