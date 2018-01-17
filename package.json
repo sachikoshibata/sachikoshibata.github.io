@@ -8,6 +8,7 @@
     "babel-eslint": "7.2.3",
     "babel-jest": "20.0.3",
     "babel-loader": "7.1.2",
+    "babel-plugin-transform-function-bind": "^6.22.0",
     "babel-preset-react-app": "^3.1.1",
     "babel-runtime": "6.26.0",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
@@ -55,7 +56,7 @@
     "build:script": "NODE_ENV=production webpack --config=config/webpack.config.script.js",
     "test": "node scripts/test.js --env=jsdom",
     "prerelease": "npm run build",
-    "release": "aws s3 sync --delete build/ s3://sachikoshibata.jp && aws cloudfront create-invalidation --distribution-id E1USVLMWR7Y6J1 --paths /index.html --paths /asset-manifest.json"
+    "release": "aws s3 sync --delete build/ s3://sachikoshibata.jp && aws cloudfront create-invalidation --distribution-id E1USVLMWR7Y6J1 --paths /index.html /asset-manifest.json"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -98,5 +99,6 @@
   },
   "eslintConfig": {
     "extends": "react-app"
-  }
+  },
+  "homepage": "https://sachikoshibata.jp"
 }

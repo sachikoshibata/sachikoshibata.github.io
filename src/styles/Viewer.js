@@ -1,4 +1,16 @@
 export default {
+  imageContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+  },
+  imageCurrent: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+  },
   component: {
     position: 'fixed',
     left: 0,
@@ -6,12 +18,6 @@ export default {
     top: 0,
     bottom: 0,
     overflow: 'auto',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    flexShrink: 0,
-    flexGrow: 0,
     backgroundColor: '#000',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',

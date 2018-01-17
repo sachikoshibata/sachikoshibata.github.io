@@ -85,7 +85,7 @@ const images = [
   require('./josei.jpg'),
 ]
 
-export default [
+const clusters = [
   {
     name: '油彩',
     description: 'メインの油彩です',
@@ -103,3 +103,19 @@ export default [
     images: images.filter(image => image.info.keyword.indexOf('old') >= 0)
   }
 ]
+
+export default clusters
+export const imageMap = {}
+
+let prev
+clusters.forEach(cluster => {
+  cluster.images.forEach(image => {
+    if(prev) {
+      image.prev = prev
+      prev.next = image
+    }
+    imageMap[image.id] = image
+    prev = image
+  })
+})
+

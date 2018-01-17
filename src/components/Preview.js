@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import style from '../styles/Preview'
-import Image from './Image'
+import Image from './PreviewImage'
 
 const HEIGHT = 240
 const MARGIN = 5
