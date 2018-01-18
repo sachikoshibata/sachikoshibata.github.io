@@ -71,9 +71,11 @@ class Viewer extends Component {
   }
   componentDidMount() {
     document.body.addEventListener('keydown', this.onKeyDown)
+    document.body.style.overflow = 'hidden'
   }
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.onKeyDown)
+    document.body.style.overflow = 'auto'
   }
   render() {
     const { match } = this.props
