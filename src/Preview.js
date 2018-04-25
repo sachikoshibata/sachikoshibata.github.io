@@ -41,7 +41,7 @@ export default class Preview extends Component {
     const width = window.innerWidth
     const rows = []
     let left = 0, top = 0, currentRow = []
-    images.forEach(image => {
+    for(let image of images) {
       currentRow.push({ ...image, left })
       left += image.width/image.height
       if(left > width/HEIGHT) {
@@ -54,7 +54,7 @@ export default class Preview extends Component {
         rows.push(currentRow)
         currentRow = []
       }
-    })
+    }
     if(currentRow.length > 0) {
       const p = Math.min((width/HEIGHT - MARGIN/HEIGHT*(currentRow.length-1)) / left, 1)
       currentRow.height = HEIGHT * p

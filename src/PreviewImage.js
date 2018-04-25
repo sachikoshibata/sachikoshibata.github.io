@@ -24,6 +24,12 @@ export default class Image extends Component {
     this._mounted = true
     this.init()
   }
+  componentWillReceiveProps(nextProps) {
+    const { src } = nextProps
+    if(src !== this.props.src) {
+      this.setState({ src })
+    }
+  }
   componentWillUnmount() {
     this._mounted = false
   }
