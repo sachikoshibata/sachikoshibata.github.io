@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
-import { imageMap } from '../images'
+import { imageMap } from './images'
 import './progress.css'
 import styled from 'styled-components'
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { imageMap } from '../images'
+import { imageMap } from './images'
 import { withRouter } from 'react-router'
 import Image from './ViewerImage'
 import styled from 'styled-components'

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import images from '../images'
+import images from './images'
 import Preview from './Preview'
 import styled from 'styled-components'
 
