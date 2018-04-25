@@ -3,14 +3,18 @@ import PropTypes from 'prop-types'
 import Image from './PreviewImage'
 import { findDOMNode } from 'react-dom'
 import styled from 'styled-components'
+import throttle from 'lodash/throttle'
 
 const HEIGHT = 240
 const MARGIN = 5
 
-const Row = styled.div`
+const Row = styled.div.attrs({
+  style: props => ({
+    height: props.height
+  })
+})`
   position: relative;
   margin-bottom: ${MARGIN}px;
-  height: ${prop => prop.height}px;
 `
 const ImageContainer = styled.div`
   position: absolute;
@@ -29,7 +33,7 @@ export default class Preview extends Component {
     this.state = {
       rows: []
     }
-    this.onResize = this.onResize.bind(this)
+    this.onResize = throttle(this.onResize.bind(this), 250, { leading: false })
     this.onScroll = this.onScroll.bind(this)
   }
   onResize() {
