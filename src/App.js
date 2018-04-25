@@ -1,8 +1,21 @@
 import React, { Component } from 'react'
 import images from './images'
 import Preview from './Preview'
-import styled from 'styled-components'
+import styled, { injectGlobal } from 'styled-components'
 
+injectGlobal`
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background:white;
+    color:black;
+  }
+  * {
+    letter-spacing: 0.01em;
+    font-size: 15px;
+  }
+`
 const Header = styled.div`
   padding: 90px 30px;
 `
