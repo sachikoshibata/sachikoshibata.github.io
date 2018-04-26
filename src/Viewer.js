@@ -30,6 +30,9 @@ const Navi = styled(Link)`
   text-decoration: none;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
+  line-height: 16pc;
+  font-family: monospace;
 `
 const ImageContainer = styled.div`
   position: relative;
@@ -87,8 +90,8 @@ class Viewer extends Component {
           <CurrentImage imageid={imageid} />
         </ImageContainer>
         <NaviContainer>
-          { image && image.prev && <Navi to={`/${image.prev.id}`}>←</Navi> }
-          { image && image.next && <Navi to={`/${image.next.id}`}>→</Navi> }
+          { image && image.prev && <Navi to={`/${image.prev.id}`}>&lt;</Navi> }
+          { image && image.next && <Navi to={`/${image.next.id}`}>&gt;</Navi> }
           <Navi to='/'>x</Navi>
         </NaviContainer>
         {/* image &&
