@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { imageMap } from './images'
 import './progress.css'
 import styled from 'styled-components'
+import sleep from './sleep'
 
 const Container = styled.div`
   display: flex;
@@ -16,51 +17,52 @@ const Progress = styled.div`
   right: 0;
 `
 
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-// const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
-
-let _cancelLoading
-const cancelLoading = () => {
-  const cancelLoading = _cancelLoading
-  if(cancelLoading) {
-    _cancelLoading = null
-    cancelLoading()
-  }
-}
-const loadImage = (uri) => new Promise((resolve, reject) => {
-  cancelLoading()
-  const image = document.createElement('img')
-  _cancelLoading = reject
-  image.onload = () => {
-    if(_cancelLoading !== reject) return
-    _cancelLoading = null
-    resolve()
-  }
-  image.onerror = () => {
-    if(_cancelLoading !== reject) return
-    _cancelLoading = null
-    reject(new Error(`canceled:${uri}`))
-  }
-  image.src = uri
-})
 
 export default class ViewerImage extends Component {
+
+  cancel() {
+    const canceller = this._canceller
+    if(canceller) {
+      this._canceller = null
+      canceller()
+    }
+  }
+  load(uri) {
+    return new Promise((resolve, reject) => {
+      this.cancel()
+      const image = document.createElement('img')
+      this._canceller = reject
+      image.onload = () => {
+        if(this._canceller !== reject) return
+        this._canceller = null
+        resolve()
+      }
+      image.onerror = () => {
+        if(this._canceller !== reject) return
+        this._canceller = null
+        reject(new Error(`canceled:${uri}`))
+      }
+      image.src = uri
+    })
+  }
   constructor(props) {
     super(props)
     this.state = {}
     this.onResize = ::this.onResize
   }
   async loadImage() {
+    this.setState({ uri: BLANK })
+    await sleep(0)
     const { imageid } = this.props
     const image = imageMap[imageid]
     if(!image) return
     try {
-    this.updateImage()
+      this.updateImage()
       this.setState({ uri: BLANK, opacity: 0, loading: true })
-      await loadImage(image.thumbnail)
+      await this.load(image.thumbnail)
       this.setState({ opacity: 1, uri: image.thumbnail })
-      await loadImage(image.uri)
+      await this.load(image.uri)
       this.setState({ uri: image.uri, loading: false })
 
     } catch(err) {
@@ -82,18 +84,16 @@ export default class ViewerImage extends Component {
       height: image.height * p,
     })
   }
-  async componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     const currentProps = this.props
     const id = currentProps.imageid
     const nextId = nextProps.imageid
     if(id !== nextId) {
-      await sleep(0)
       this.loadImage()
     }
   }
   componentDidMount() {
-    const { imageid } = this.props
-    this.loadImage(imageid)
+    this.loadImage()
     window.addEventListener('resize', this.onResize)
   }
   componentWillUnmount() {
