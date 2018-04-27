@@ -5,7 +5,7 @@ import { findDOMNode } from 'react-dom'
 import styled from 'styled-components'
 import throttle from 'lodash/throttle'
 
-const HEIGHT = 240
+const HEIGHT = 180
 const MARGIN = 5
 
 const Row = styled.div.attrs({

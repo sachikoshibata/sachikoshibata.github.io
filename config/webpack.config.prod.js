@@ -139,7 +139,7 @@ module.exports = {
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
               thumbnail: 'static/media/[name].[hash:8].thumbnail.[ext]',
-              thumbnailSize: 240,
+              thumbnailSize: 180,
               exifKeys: [
                 [ 'keyword', exif => (exif.keywords||'').split(',').map(v => v.trim()) ],
                 'createDate',
