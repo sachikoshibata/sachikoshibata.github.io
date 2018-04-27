@@ -20,26 +20,24 @@ const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAI
 export default class ViewerImage extends Component {
 
   cancel() {
-    const canceller = this._canceller
-    if(canceller) {
-      this._canceller = null
-      canceller()
+    const cancel = this._cancel
+    if(cancel) {
+      this._cancel = null
+      cancel()
     }
   }
   load(uri) {
     return new Promise((resolve, reject) => {
       this.cancel()
       const image = document.createElement('img')
-      this._canceller = reject
+      this._cancel = () => image.src = ''
       image.onload = () => {
-        if(this._canceller !== reject) return
-        this._canceller = null
+        this._cancel = null
         resolve()
       }
-      image.onerror = () => {
-        if(this._canceller !== reject) return
-        this._canceller = null
-        reject(new Error(`canceled:${uri}`))
+      image.onerror = (err) => {
+        this._cancel = null
+        reject(err)
       }
       image.src = uri
     })
@@ -48,7 +46,7 @@ export default class ViewerImage extends Component {
     super(props)
     this.state = {}
   }
-  async loadImage(props) {
+  async init(props) {
     const { imageid } = props || this.props
     const image = imageMap[imageid]
     if(!image) return
@@ -82,11 +80,14 @@ export default class ViewerImage extends Component {
     this.updateImage(nextProps)
     if(id !== nextId) {
       console.log('reload:', id, '->', nextId)
-      this.loadImage(nextProps)
+      this.init(nextProps)
     }
   }
   componentDidMount() {
-    this.loadImage()
+    this.init()
+  }
+  componentWillUnmount() {
+    this.cancel()
   }
   render() {
     const { imageid, style, ...props } = this.props
