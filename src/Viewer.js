@@ -121,10 +121,10 @@ class Viewer extends Component {
         history.push('/')
         break
       case 'ArrowRight':
-        history.push(`/${image.next ? image.next.id : ''}`)
+        if(!evt.metaKey) history.push(`/${image.next ? image.next.id : ''}`)
         break
       case 'ArrowLeft':
-        history.push(`/${image.prev ? image.prev.id : ''}`)
+        if(!evt.metaKey) history.push(`/${image.prev ? image.prev.id : ''}`)
         break
 
       default:
