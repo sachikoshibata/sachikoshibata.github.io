@@ -8,6 +8,13 @@ import styled from 'styled-components'
 import sleep from './sleep'
 import throttle from 'lodash/throttle'
 
+const Info = styled.div`
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  line-height: 26px;
+  color: white;
+`
 const Container = styled.div`
   position: fixed;
   left: 0;
@@ -171,7 +178,7 @@ class Viewer extends Component {
         onTouchCancel={this.onTouchCancel}
       >
         <ImageContainer
-          to={`/${image.next.id}`}
+          to={`/${image.next ? image.next.id : ''}`}
           ref='image'
           touch={touch}
           delta={-width * image.index + delta}
@@ -192,11 +199,11 @@ class Viewer extends Component {
           { image && image.next && <Navi to={`/${image.next.id}`}>&gt;</Navi> }
           <Navi to='/'>x</Navi>
         </NaviContainer>
-        {/* image &&
-            <div style={style.info}>
-              <b>{image.info.title}</b>&nbsp;{image.info.description}
-            </div>
-        */}
+        { image &&
+            <Info>
+              <strong>{image.info.title}</strong>&nbsp;{image.info.description}
+            </Info>
+        }
       </Container>
     )
   }
