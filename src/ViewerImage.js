@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import { findDOMNode } from 'react-dom'
 import { imageMap } from './images'
 import './progress.css'
 import styled from 'styled-components'
-import sleep from './sleep'
 
 const Container = styled.div`
   display: flex;
@@ -49,17 +47,15 @@ export default class ViewerImage extends Component {
   constructor(props) {
     super(props)
     this.state = {}
-    this.onResize = ::this.onResize
   }
-  async loadImage() {
-    this.setState({ uri: BLANK })
-    await sleep(0)
-    const { imageid } = this.props
+  async loadImage(props) {
+    const { imageid } = props || this.props
     const image = imageMap[imageid]
     if(!image) return
     try {
-      this.updateImage()
-      this.setState({ uri: BLANK, opacity: 0, loading: true })
+      this.updateImage(props)
+      this.setState({ uri: BLANK, opacity: 0 })
+      this.setState({ loading: true })
       await this.load(image.thumbnail)
       this.setState({ opacity: 1, uri: image.thumbnail })
       await this.load(image.uri)
@@ -68,16 +64,11 @@ export default class ViewerImage extends Component {
     } catch(err) {
     }
   }
-  onResize() {
-    this.updateImage()
-  }
-  updateImage() {
-    const { imageid } = this.props
-    const node = findDOMNode(this)
-    const rect = node.getBoundingClientRect()
+  updateImage(props) {
+    const { width, height, imageid } = props || this.props
     const image = imageMap[imageid]
     if(!image) return
-    const p = Math.min(rect.width/image.width, rect.height/image.height, 1)
+    const p = Math.min(width/image.width, height/image.height, 1)
     this.setState({
       image,
       width: image.width * p,
@@ -88,16 +79,14 @@ export default class ViewerImage extends Component {
     const currentProps = this.props
     const id = currentProps.imageid
     const nextId = nextProps.imageid
+    this.updateImage(nextProps)
     if(id !== nextId) {
-      this.loadImage()
+      console.log('reload:', id, '->', nextId)
+      this.loadImage(nextProps)
     }
   }
   componentDidMount() {
     this.loadImage()
-    window.addEventListener('resize', this.onResize)
-  }
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize)
   }
   render() {
     const { imageid, style, ...props } = this.props

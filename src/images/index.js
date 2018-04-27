@@ -106,16 +106,19 @@ const clusters = [
 
 export default clusters
 export const imageMap = {}
+export const imageList = []
 
-let prev
-clusters.forEach(cluster => {
-  cluster.images.forEach(image => {
+let prev, index = 0
+for(let cluster of clusters) {
+  for(let image of cluster.images) {
     if(prev) {
       image.prev = prev
       prev.next = image
     }
+    image.index = index++
     imageMap[image.id] = image
+    imageList.push(image)
     prev = image
-  })
-})
+  }
+}
 
