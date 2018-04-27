@@ -37,11 +37,12 @@ const Navi = styled(Link)`
   line-height: 16pc;
   font-family: monospace;
 `
-const ImageContainer = styled.div.attrs({
+const ImageContainer = styled(Link).attrs({
   style: props => ({
     transform: `translateX(${props.delta}px)`
   })
 })`
+  display: block;
   position: relative;
   width: 100%;
   height: 100%;
@@ -131,11 +132,13 @@ class Viewer extends Component {
         break
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     window.addEventListener('resize', this.onResize)
-    document.body.addEventListener('keydown', this.onKeyDown)
+    document.addEventListener('keydown', this.onKeyDown)
     document.body.style.overflow = 'hidden'
     this.updateWidth()
+    await sleep(0)
+    this.setState({ touch: false })
   }
   onResize() {
     this.updateWidth()
@@ -147,7 +150,7 @@ class Viewer extends Component {
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize)
-    document.body.removeEventListener('keydown', this.onKeyDown)
+    document.removeEventListener('keydown', this.onKeyDown)
     document.body.style.overflow = 'auto'
   }
   componentWillReceiveProps(nextProps) {
@@ -167,7 +170,12 @@ class Viewer extends Component {
         onTouchEnd={this.onTouchEnd}
         onTouchCancel={this.onTouchCancel}
       >
-        <ImageContainer ref='image' touch={touch} delta={-width * image.index + delta}>
+        <ImageContainer
+          to={`/${image.next.id}`}
+          ref='image'
+          touch={touch}
+          delta={-width * image.index + delta}
+        >
           { width && height && imageList.map((img, i) => 
             (image === img || image.next === img || image.prev === img) &&
             <Image
